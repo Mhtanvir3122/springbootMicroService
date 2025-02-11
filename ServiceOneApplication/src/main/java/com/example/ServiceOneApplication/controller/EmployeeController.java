@@ -41,11 +41,19 @@ public class EmployeeController {
     }
 
     @PostMapping("/search")
-    public ResponseEntity<List<Employee>> getEmployeesByEmails(@RequestBody Map<String, List<String>> request) {
-        List<String> emails = request.get("emails");
-        List<Employee> employees = employeeService.getEmployeesByEmails(emails);
+    public ResponseEntity<List<Employee>> searchEmployees(@RequestBody Map<String, String> request) {
+        String keyword = request.get("keyword");
+
+        List<Employee> employees;
+        if (keyword == null || keyword.trim().isEmpty()) {
+            employees = employeeService.getAllEmployees(); // Return all employees
+        } else {
+            employees = employeeService.searchEmployees(keyword);
+        }
         return ResponseEntity.ok(employees);
     }
+
+
 
 }
 

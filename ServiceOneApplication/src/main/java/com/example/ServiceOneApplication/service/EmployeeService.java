@@ -36,8 +36,8 @@ public class EmployeeService {
         }
         return null;
     }
-    public List<Employee> getEmployeesByEmails(List<String> emails) {
-        return employeeRepository.findByEmailIn(emails);
+    public List<Employee> searchEmployees(String keyword) {
+        return employeeRepository.findByNameContainingIgnoreCaseOrEmailContainingIgnoreCase(keyword, keyword);
     }
 
     public void deleteEmployee(Long id) {
