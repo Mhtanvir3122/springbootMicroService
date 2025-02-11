@@ -2,9 +2,11 @@ package com.example.ServiceOneApplication.controller;
 import com.example.ServiceOneApplication.model.Employee;
 import com.example.ServiceOneApplication.service.EmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/employees")
@@ -37,5 +39,13 @@ public class EmployeeController {
     public void deleteEmployee(@PathVariable Long id) {
         employeeService.deleteEmployee(id);
     }
+
+    @PostMapping("/search")
+    public ResponseEntity<List<Employee>> getEmployeesByEmails(@RequestBody Map<String, List<String>> request) {
+        List<String> emails = request.get("emails");
+        List<Employee> employees = employeeService.getEmployeesByEmails(emails);
+        return ResponseEntity.ok(employees);
+    }
+
 }
 
