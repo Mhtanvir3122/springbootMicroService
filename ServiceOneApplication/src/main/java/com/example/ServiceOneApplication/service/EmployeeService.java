@@ -2,6 +2,7 @@ package com.example.ServiceOneApplication.service;
 
 import com.example.ServiceOneApplication.model.Employee;
 import com.example.ServiceOneApplication.repository.EmployeeRepository;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.List;
@@ -37,10 +38,17 @@ public class EmployeeService {
         return null;
     }
     public List<Employee> searchEmployees(String keyword) {
-        return employeeRepository.findByNameContainingIgnoreCaseOrEmailContainingIgnoreCase(keyword, keyword);
+        return employeeRepository.findByNameContainingIgnoreCaseOrEmailContainingIgnoreCaseOrDepartmentContainingIgnoreCase(keyword, keyword,keyword);
     }
 
-    public void deleteEmployee(Long id) {
-        employeeRepository.deleteById(id);
+    public Employee deleteEmployee(Long id) {
+        Optional<Employee> employee = employeeRepository.findById(id);
+        if (employee.isPresent()) {
+            employeeRepository.deleteById(id);
+            return employee.get();
+        } else {
+            throw new EntityNotFoundException("Employee not found with id: " + id);
+        }
     }
+
 }
