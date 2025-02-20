@@ -22,6 +22,13 @@ spring:
             - Path=/service2/**
           filters:
             - StripPrefix=1
+        ## Service3
+        - id: AuthService
+          uri: lb://AuthService
+          predicates:
+            - Path=/AuthService/**
+          filters:
+            - StripPrefix=1
 server:
   port: 8080
 
