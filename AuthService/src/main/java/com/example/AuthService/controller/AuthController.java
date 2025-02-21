@@ -1,6 +1,7 @@
 package com.example.AuthService.controller;
 
 import com.example.AuthService.model.User;
+import com.example.AuthService.model.dto.UserDTO;
 import com.example.AuthService.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -41,7 +42,7 @@ public class AuthController {
         }
     }
     @GetMapping("/list")
-    public List<User> getUserList() {
+    public List<UserDTO> getAllUsers() {
         return userService.getAllUsers();
     }
 }

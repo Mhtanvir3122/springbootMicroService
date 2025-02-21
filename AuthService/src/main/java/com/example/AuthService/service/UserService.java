@@ -1,6 +1,7 @@
 package com.example.AuthService.service;
 
 import com.example.AuthService.model.User;
+import com.example.AuthService.model.dto.UserDTO;
 import com.example.AuthService.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -8,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class UserService {
@@ -37,8 +39,11 @@ public class UserService {
         }
         return "User not found!";
     }
-    public List<User> getAllUsers() {
-        return userRepository.findAll();
+    public List<UserDTO> getAllUsers() {
+        List<User> users = userRepository.findAll();
+        return users.stream()
+                .map(user -> new UserDTO(user.getId(), user.getUsername(), user.getEmail(), user.getRole()))
+                .collect(Collectors.toList());
     }
 }
 
