@@ -49,10 +49,24 @@ public class AuthController {
     }
 
 
+    @PostMapping("/search")
+    public ResponseEntity<List<UserDTO>> searchEmployees(@RequestBody Map<String, String> request) {
+        String keyword = request.get("keyword");
+
+        List<UserDTO> users;
+        if (keyword == null || keyword.trim().isEmpty()) {
+            users = userService.getAllUsers(); // Return all employees
+        } else {
+            users = userService.searchUsers(keyword);
+        }
+        return ResponseEntity.ok(users);
+    }
+
+
 
 
     @PostMapping("/{userId}/assign-roles")
-    public ResponseEntity<User> assignRoles(
+    public ResponseEntity<UserDTO> assignRoles(
             @PathVariable Long userId,
             @RequestBody List<Long> roleIds) {
         return ResponseEntity.ok(userService.assignRoles(userId, roleIds));

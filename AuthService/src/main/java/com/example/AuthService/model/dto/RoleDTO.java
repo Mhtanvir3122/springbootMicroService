@@ -1,5 +1,6 @@
 package com.example.AuthService.model.dto;
 
+import com.example.AuthService.model.Role;
 import lombok.*;
 
 @Getter

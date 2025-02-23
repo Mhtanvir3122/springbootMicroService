@@ -69,9 +69,26 @@ public class UserService {
                 .collect(Collectors.toList());
     }
 
+    public List<UserDTO> searchUsers(String keyword) {
+        return userRepository.findByUsernameContainingIgnoreCase(keyword);
+    }
 
 
-    public User assignRoles(Long userId, List<Long> roleIds) {
+//    public User assignRoles(Long userId, List<Long> roleIds) {
+//        User user = userRepository.findById(userId)
+//                .orElseThrow(() -> new RuntimeException("User not found"));
+//
+//        Set<Role> roles = new HashSet<>(roleRepository.findAllById(roleIds));
+//
+//        if (roles.isEmpty()) {
+//            throw new RuntimeException("No valid roles found");
+//        }
+//
+//        user.getRoles().addAll(roles);
+//        return userRepository.save(user);
+//    }
+
+    public UserDTO assignRoles(Long userId, List<Long> roleIds) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
@@ -81,9 +98,18 @@ public class UserService {
             throw new RuntimeException("No valid roles found");
         }
 
+        // Clear existing roles before assigning new ones
+        user.getRoles().clear();
         user.getRoles().addAll(roles);
-        return userRepository.save(user);
+
+        userRepository.save(user);
+
+        return new UserDTO(user); // Return DTO instead of User entity
     }
+
+
+
+
     public User removeRoles(Long userId, List<Long> roleIds) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
