@@ -24,9 +24,6 @@ public class User {
     @Column(nullable = false)
     private String email;
 
-//    @Column(nullable = false)
-//    private String role;
-
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "user_roles",

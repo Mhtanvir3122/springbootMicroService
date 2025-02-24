@@ -24,8 +24,7 @@ public class UserDTO {
         this.id = user.getId();
         this.username = user.getUsername();
         this.email = user.getEmail();
-        this.roles =
-                        user.getRoles().stream()
+        this.roles = user.getRoles().stream()
                                 .map(role -> new RoleDTO(role.getId(), role.getName()))
                                 .collect(Collectors.toSet());
     }

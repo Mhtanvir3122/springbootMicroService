@@ -1,72 +1,43 @@
 package com.example.AuthService.model;
 
+import com.example.AuthService.model.dto.RouteConfigChild;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Table(name = "routeconfigs")
+
 public class RouteConfig {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     private String link;
     private String section;
     private String icon;
 
-    @ElementCollection
-    private List<String> permissionRole;
 
-    // Constructors, getters, and setters
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "routeconfig_roles",
+            joinColumns = @JoinColumn(name = "routeconfig_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id")
+    )
+    private Set<Role> permissionRole;
 
-    public RouteConfig() {
-    }
 
-    public RouteConfig(String link, String section, String icon, List<String> permissionRole) {
-        this.link = link;
-        this.section = section;
-        this.icon = icon;
-        this.permissionRole = permissionRole;
-    }
 
-    public Long getId() {
-        return id;
-    }
+    @JsonManagedReference // Prevent infinite recursion
+    @OneToMany(mappedBy = "parent", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<RouteConfigChild> children = new HashSet<>();
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getLink() {
-        return link;
-    }
-
-    public void setLink(String link) {
-        this.link = link;
-    }
-
-    public String getSection() {
-        return section;
-    }
-
-    public void setSection(String section) {
-        this.section = section;
-    }
-
-    public String getIcon() {
-        return icon;
-    }
-
-    public void setIcon(String icon) {
-        this.icon = icon;
-    }
-
-    public List<String> getPermissionRole() {
-        return permissionRole;
-    }
-
-    public void setPermissionRole(List<String> permissionRole) {
-        this.permissionRole = permissionRole;
-    }
 }
