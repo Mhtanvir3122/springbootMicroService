@@ -1,5 +1,6 @@
 package com.example.AuthService.controller;
 
+import com.example.AuthService.model.Role;
 import com.example.AuthService.model.RouteConfig;
 import com.example.AuthService.model.dto.RouteChildConfigDTO;
 import com.example.AuthService.model.dto.RouteConfigChild;
@@ -11,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/auth/route-configs")
@@ -36,6 +38,22 @@ public class RouteConfigController {
         List<RouteConfig> routeConfigs = routeConfigService.getAllRouteConfigs();
         return ResponseEntity.ok(routeConfigs);
     }
+
+
+
+    @PostMapping("/route/search")
+    public ResponseEntity<List<RouteConfig>> searchEmployees(@RequestBody Map<String, String> request) {
+        String keyword = request.get("keyword");
+
+        List<RouteConfig> routeConfigs;
+        if (keyword == null || keyword.trim().isEmpty()) {
+            routeConfigs = routeConfigService.getAllRouteConfigs(); // Return all employees
+        } else {
+            routeConfigs = routeConfigService.searchRouteConfigs(keyword);
+        }
+        return ResponseEntity.ok(routeConfigs);
+    }
+
 
     @GetMapping("/list")
     public List<RouteConfigDTO> getAllUsers() {

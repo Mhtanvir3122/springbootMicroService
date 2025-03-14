@@ -174,6 +174,15 @@ public class RouteConfigService {
         return new RouteChildConfigDTO(user); // Return DTO instead of User entity
     }
 
+//    public List<RouteConfig> searchRouteConfigs(RouteConfig searchCriteria) {
+//        // Example logic to search by name and type
+//        // You can extend this with more complex filtering logic if needed.
+//        return routeConfigRepository.findBySectionContaining(searchCriteria.getSection());
+//    }
+
+    public List<RouteConfig> searchRouteConfigs(String keyword) {
+        return routeConfigRepository.findBySectionContainingIgnoreCase(keyword);
+    }
 
 }
 
