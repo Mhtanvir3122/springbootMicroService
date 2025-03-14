@@ -3,6 +3,7 @@ package com.example.AuthService.controller;
 import com.example.AuthService.model.Role;
 import com.example.AuthService.model.User;
 import com.example.AuthService.model.dto.UserDTO;
+import com.example.AuthService.model.dto.UserDTOMessage;
 import com.example.AuthService.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -10,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
 @RestController
@@ -82,5 +84,12 @@ public class AuthController {
     @GetMapping("/{userId}/roles")
     public ResponseEntity<Set<Role>> getUserRoles(@PathVariable Long userId) {
         return ResponseEntity.ok(userService.getUserRoles(userId));
+    }
+
+    @GetMapping("/user/{id}")
+    public ResponseEntity<UserDTOMessage> getUserById(@PathVariable Long id) {
+        Optional<UserDTOMessage> userDTO = userService.getUserById(id);
+        return userDTO.map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.notFound().build());
     }
 }

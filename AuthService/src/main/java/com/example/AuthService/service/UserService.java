@@ -4,6 +4,7 @@ import com.example.AuthService.model.Role;
 import com.example.AuthService.model.User;
 import com.example.AuthService.model.dto.RoleDTO;
 import com.example.AuthService.model.dto.UserDTO;
+import com.example.AuthService.model.dto.UserDTOMessage;
 import com.example.AuthService.repository.RoleRepository;
 import com.example.AuthService.repository.UserRepository;
 import jakarta.transaction.Transactional;
@@ -129,7 +130,10 @@ public class UserService {
         return user.getRoles();
     }
 
-
+    public Optional<UserDTOMessage> getUserById(Long id) {
+        return userRepository.findById(id)
+                .map(user -> new UserDTOMessage(user.getId(), user.getUsername(), user.getEmail()));
+    }
 
 }
 

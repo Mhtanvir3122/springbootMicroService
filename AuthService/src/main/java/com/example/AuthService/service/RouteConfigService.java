@@ -43,9 +43,22 @@ public class RouteConfigService {
     }
 
 
+//    public List<RouteConfigDTO> getAllRoutes() {
+//        List<RouteConfig> routeConfigs = routeConfigRepository.findAll();
+//        return routeConfigs.stream()
+//                .map(route -> new RouteConfigDTO(
+//                        route.getId(),
+//                        route.getLink(),
+//                        route.getIcon(),
+//                        route.getSection(),
+//                        route.getPermissionRole().stream()
+//                                .map(role -> new RoleDTO(role.getId(), role.getName()))
+//                                .collect(Collectors.toSet())))
+//                .collect(Collectors.toList());
+//    }
+
     public List<RouteConfigDTO> getAllRoutes() {
-        List<RouteConfig> routeConfigs = routeConfigRepository.findAll();
-        return routeConfigs.stream()
+        return routeConfigRepository.findAll().stream()
                 .map(route -> new RouteConfigDTO(
                         route.getId(),
                         route.getLink(),
