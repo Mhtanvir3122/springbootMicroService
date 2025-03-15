@@ -92,4 +92,13 @@ public class AuthController {
         return userDTO.map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
+
+
+    @GetMapping("/agents")
+    public ResponseEntity<List<User>> getAllAgents() {
+        List<User> agents = userService.getAllAgents();
+        return ResponseEntity.ok(agents);
+    }
+
+
 }

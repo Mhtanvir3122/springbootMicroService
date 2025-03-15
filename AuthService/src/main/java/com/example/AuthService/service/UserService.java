@@ -135,5 +135,14 @@ public class UserService {
                 .map(user -> new UserDTOMessage(user.getId(), user.getUsername(), user.getEmail()));
     }
 
+
+    public List<User> getAllAgents() {
+        Optional<Role> agentRole = roleRepository.findByName("AGENT");
+
+        return agentRole.map(role -> userRepository.findByRolesIn(Set.of(role)))
+                .orElse(Collections.emptyList());
+    }
+
+
 }
 

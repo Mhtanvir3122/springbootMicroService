@@ -29,9 +29,4 @@ public class UserDTO {
                                 .collect(Collectors.toSet());
     }
 
-    public UserDTO(Long id, String username, String email) {
-        this.id = getId();
-        this.username = getUsername();
-        this.email = getEmail();
-    }
 }
