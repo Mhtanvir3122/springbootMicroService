@@ -5,14 +5,18 @@ import com.example.ServiceTwoApplication.FignClient.UserDto;
 import com.example.ServiceTwoApplication.Model.Task;
 import com.example.ServiceTwoApplication.Model.User;
 import com.example.ServiceTwoApplication.Repository.TaskRepository;
-import com.example.ServiceTwoApplication.dto.TaskDTO;
+import com.example.ServiceTwoApplication.dto.TaskSpecification;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
+import java.util.logging.Logger;
 
 
 @Service
@@ -20,6 +24,9 @@ public class TaskService {
 
     @Autowired
     private TaskRepository taskRepository;
+    private static final Logger logger = Logger.getLogger(TaskService.class.getName());
+
+
 
     @Autowired
     private UserClient userFeignClient; // To fetch the agent (User) via Feign Client
@@ -79,7 +86,7 @@ public class TaskService {
 
 
     // CREATE: Create a new task
-    public Task createTask(String createdBy, LocalDateTime createdDate, String priority, String taskName, String status,   String description
+    public Task createTask(String createdBy, LocalDateTime createdDate, String priority, String taskName, String status,   String description,LocalDateTime dueDate
 ) {
         Task task = new Task();
 
@@ -89,6 +96,8 @@ public class TaskService {
         task.setName(taskName);
         task.setStatus(status);
         task.setDescription(description);
+        task.setDueDate(dueDate);
+
 
         return taskRepository.save(task);
     }
@@ -121,6 +130,9 @@ public class TaskService {
         role.setPriority(roleDetails.getPriority());
         role.setCreatedDate(LocalDateTime.now());
         role.setStatus(roleDetails.getStatus());
+        role.setCreatedBy(roleDetails.getCreatedBy());
+        role.setDueDate(roleDetails.getDueDate());
+
 
         return taskRepository.save(role);
     }
@@ -147,4 +159,32 @@ public class TaskService {
     public List<Long> getUsersWithOneOrFewerTasks() {
         return taskRepository.findUsersWithOneOrFewerTasks();
     }
+
+
+
+    public List<Task> getFilteredTasks(String status, String priority, Long assignedUserId,
+                                       Long createdBy) {
+        return taskRepository.findFilteredTasks(status, priority, assignedUserId, createdBy);
+    }
+
+    // Run every minute
+    @Scheduled(cron = "0 * * * * *")  // Every minute
+    public void markOverdueTasksAsExpired() {
+        System.out.println("Tasks marked as expired");
+        // Get current time
+        LocalDateTime currentTime = LocalDateTime.now();
+
+        // Fetch tasks that are overdue (you can adjust the condition based on your task structure)
+        List<Task> overdueTasks = taskRepository.findTasksByDueDateBeforeAndStatusNot(currentTime, "EXPIRED");
+
+        // Loop through overdue tasks and update their status to EXPIRED
+        for (Task task : overdueTasks) {
+            task.setStatus("EXPIRED");
+            taskRepository.save(task);
+
+            // Log the expired task
+            logger.info("Task with ID: " + task.getId() + " marked as EXPIRED.");
+        }
+    }
+
 }

@@ -4,6 +4,7 @@ import com.example.ServiceTwoApplication.Model.Task;
 import com.example.ServiceTwoApplication.Model.User;
 import com.example.ServiceTwoApplication.Service.TaskService;
 import com.example.ServiceTwoApplication.dto.TaskDTO;
+import com.example.ServiceTwoApplication.dto.TaskFilterRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -34,7 +35,8 @@ public class TaskController {
                     taskDto.getPriority(),
                     taskDto.getName(),
                     taskDto.getStatus(),
-                    taskDto.getDescription()
+                    taskDto.getDescription(),
+                    taskDto.getDueDate()
             );
             return ResponseEntity.status(HttpStatus.CREATED).body(createdTask);
         } catch (IllegalArgumentException e) {
@@ -75,6 +77,19 @@ public class TaskController {
     @GetMapping("/users-with-one-or-fewer-tasks")
     public List<Long> getUsersWithOneOrFewerTasks() {
         return taskService.getUsersWithOneOrFewerTasks();
+    }
+
+
+
+    @PostMapping("/filter")
+    public List<Task> searchTasks(@RequestBody TaskFilterRequest filterRequest) {
+        return taskService.getFilteredTasks(
+                filterRequest.getStatus(),
+                filterRequest.getPriority(),
+                filterRequest.getAssignedUserId(),
+                filterRequest.getCreatedBy()
+
+        );
     }
 
 }

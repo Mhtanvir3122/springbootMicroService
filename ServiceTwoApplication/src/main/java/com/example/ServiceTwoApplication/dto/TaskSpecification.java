@@ -1,69 +1,44 @@
 package com.example.ServiceTwoApplication.dto;
-
-
 import com.example.ServiceTwoApplication.Model.Task;
 import org.springframework.data.jpa.domain.Specification;
+import jakarta.persistence.criteria.Predicate;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 public class TaskSpecification {
-    public static Specification<Task> searchTasks(TaskSearchRequest searchRequest) {
+
+    public static Specification<Task> filterTasks(String status, String priority,
+                                                  Long assignedUserId, Long createdBy,
+                                                  Date createdDateFrom, Date createdDateTo) {
         return (root, query, criteriaBuilder) -> {
-            var predicates = criteriaBuilder.conjunction(); // Default: `AND` condition
+            List<Predicate> predicates = new ArrayList<>();
 
-            if (searchRequest.getName() != null && !searchRequest.getName().isEmpty()) {
-                predicates.getExpressions().add(
-                        criteriaBuilder.like(root.get("name"), "%" + searchRequest.getName() + "%")
-                );
+            if (status != null) {
+                predicates.add(criteriaBuilder.equal(root.get("status"), status));
             }
 
-            if (searchRequest.getStatus() != null && !searchRequest.getStatus().isEmpty()) {
-                predicates.getExpressions().add(
-                        criteriaBuilder.equal(root.get("status"), searchRequest.getStatus())
-                );
+            if (priority != null) {
+                predicates.add(criteriaBuilder.equal(root.get("priority"), priority));
             }
 
-            if (searchRequest.getPriority() != null && !searchRequest.getPriority().isEmpty()) {
-                predicates.getExpressions().add(
-                        criteriaBuilder.equal(root.get("priority"), searchRequest.getPriority())
-                );
+            if (assignedUserId != null) {
+                predicates.add(criteriaBuilder.equal(root.get("assignedUserId"), assignedUserId));
             }
 
-            if (searchRequest.getAssignedUserId() != null) {
-                predicates.getExpressions().add(
-                        criteriaBuilder.equal(root.get("assignedUser").get("id"), searchRequest.getAssignedUserId())
-                );
+            if (createdBy != null) {
+                predicates.add(criteriaBuilder.equal(root.get("createdBy"), createdBy));
             }
 
-            if (searchRequest.getCreatedBy() != null && !searchRequest.getCreatedBy().isEmpty()) {
-                predicates.getExpressions().add(
-                        criteriaBuilder.equal(root.get("createdBy"), searchRequest.getCreatedBy())
-                );
+            if (createdDateFrom != null) {
+                predicates.add(criteriaBuilder.greaterThanOrEqualTo(root.get("createdDate"), createdDateFrom));
             }
 
-            if (searchRequest.getStartDate() != null) {
-                predicates.getExpressions().add(
-                        criteriaBuilder.greaterThanOrEqualTo(root.get("createdDate"), searchRequest.getStartDate())
-                );
+            if (createdDateTo != null) {
+                predicates.add(criteriaBuilder.lessThanOrEqualTo(root.get("createdDate"), createdDateTo));
             }
 
-            if (searchRequest.getEndDate() != null) {
-                predicates.getExpressions().add(
-                        criteriaBuilder.lessThanOrEqualTo(root.get("createdDate"), searchRequest.getEndDate())
-                );
-            }
-
-            if (searchRequest.getDueStartDate() != null) {
-                predicates.getExpressions().add(
-                        criteriaBuilder.greaterThanOrEqualTo(root.get("dueDate"), searchRequest.getDueStartDate())
-                );
-            }
-
-            if (searchRequest.getDueEndDate() != null) {
-                predicates.getExpressions().add(
-                        criteriaBuilder.lessThanOrEqualTo(root.get("dueDate"), searchRequest.getDueEndDate())
-                );
-            }
-
-            return predicates;
+            return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
         };
     }
 }
