@@ -15,6 +15,6 @@ public interface UserClient {
     @GetMapping("/auth/user/{id}")
     UserDto getUserById(@PathVariable("id") Long id);
 
-    @GetMapping("/auth/users/agents")
+    @GetMapping("/auth/agents")
     ResponseEntity<List<User>> getAllAgents();
 }

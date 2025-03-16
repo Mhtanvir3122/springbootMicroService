@@ -8,6 +8,7 @@ import com.example.ServiceTwoApplication.Repository.TaskRepository;
 import com.example.ServiceTwoApplication.dto.TaskDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -36,9 +37,26 @@ public class TaskService {
         // Fetch the active task count for the agent
         long activeTaskCount = taskRepository.countByAssignedUserIdAndStatusIn(agentId, List.of("TODO", "IN_PROGRESS"));
 
-        if (activeTaskCount >= 5) {
+        if (activeTaskCount > 4) {
 
-            return reassignTask(agentId); // Handle task reassignment if the agent has 5 active tasks
+            List<Long> users = taskRepository.findUsersWithOneOrFewerTasks();
+            Long firstUser = users.get(0);
+
+            User assignedUser2 = new User();
+            assignedUser2.setId(firstUser);
+
+
+            Task task = taskRepository.findById(taskId)
+                    .orElseThrow(() -> new RuntimeException("Task not found"));
+
+            // Assign the task to the agent (set the assignedUser object)
+
+            task.setAssignedUser(assignedUser2);
+            taskRepository.save(task);
+
+            return "Task assigned successfully";
+
+
         }
 
         // Fetch the task to assign it to the agent
@@ -54,7 +72,6 @@ public class TaskService {
 
     private String reassignTask(Long agentId) {
         // Handle task reassignment logic here (you can implement this part)
-
 
 
         return "Agent has exceeded the task limit. Tasks reassigned.";
@@ -110,4 +127,22 @@ public class TaskService {
         taskRepository.deleteById(id);
     }
 
+
+
+
+    private final UserClient userClient;
+
+    public TaskService(UserClient userClient) {
+        this.userClient = userClient;
+    }
+
+    public List<User> getAllAgents() {
+        ResponseEntity<List<User>> response = userClient.getAllAgents();
+        return response.getBody();
+    }
+
+
+    public List<Long> getUsersWithOneOrFewerTasks() {
+        return taskRepository.findUsersWithOneOrFewerTasks();
+    }
 }

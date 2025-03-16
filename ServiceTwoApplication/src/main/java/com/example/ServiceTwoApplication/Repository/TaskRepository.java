@@ -18,4 +18,11 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
 
     List<Task> findByNameContainingIgnoreCase( String name, Sort sort);
 
+    @Query("SELECT  u.id " +
+            "FROM User u " +
+            "LEFT JOIN Task t ON u.id = t.assignedUser.id " +
+            "GROUP BY u.username, u.id " +
+            "HAVING COUNT(t.assignedUser) <= 4")
+    List<Long> findUsersWithOneOrFewerTasks();
+
 }

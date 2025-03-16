@@ -1,6 +1,7 @@
 package com.example.ServiceTwoApplication.Controller;
 
 import com.example.ServiceTwoApplication.Model.Task;
+import com.example.ServiceTwoApplication.Model.User;
 import com.example.ServiceTwoApplication.Service.TaskService;
 import com.example.ServiceTwoApplication.dto.TaskDTO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -63,6 +64,17 @@ public class TaskController {
     @DeleteMapping("/task-delete/{id}")
     public void deleteRole(@PathVariable Long id) {
         taskService.deleteTask(id);
+    }
+
+    @GetMapping("/agents")
+    public ResponseEntity<List<User>> getAgents() {
+        List<User> agents = taskService.getAllAgents();
+        return ResponseEntity.ok(agents);
+    }
+
+    @GetMapping("/users-with-one-or-fewer-tasks")
+    public List<Long> getUsersWithOneOrFewerTasks() {
+        return taskService.getUsersWithOneOrFewerTasks();
     }
 
 }
