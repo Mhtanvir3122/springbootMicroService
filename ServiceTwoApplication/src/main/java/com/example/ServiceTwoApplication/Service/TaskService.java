@@ -120,6 +120,8 @@ public class TaskService {
         role.setDescription(roleDetails.getDescription());
         role.setPriority(roleDetails.getPriority());
         role.setCreatedDate(LocalDateTime.now());
+        role.setStatus(roleDetails.getStatus());
+
         return taskRepository.save(role);
     }
 
