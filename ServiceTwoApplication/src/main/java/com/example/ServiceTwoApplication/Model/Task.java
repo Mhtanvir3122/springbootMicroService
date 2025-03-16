@@ -25,6 +25,7 @@ public class Task {
     private LocalDateTime dueDate;
     private String createdBy;
 
+    private String Description;
 
 }
 

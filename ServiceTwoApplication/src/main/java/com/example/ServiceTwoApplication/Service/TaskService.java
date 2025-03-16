@@ -62,13 +62,17 @@ public class TaskService {
 
 
     // CREATE: Create a new task
-    public Task createTask(String createdBy, LocalDateTime createdDate, String priority, String taskName, String status) {
+    public Task createTask(String createdBy, LocalDateTime createdDate, String priority, String taskName, String status,   String description
+) {
         Task task = new Task();
+
         task.setCreatedBy(createdBy);
         task.setCreatedDate(LocalDateTime.now());
         task.setPriority(priority);
         task.setName(taskName);
         task.setStatus(status);
+        task.setDescription(description);
+
         return taskRepository.save(task);
     }
 
@@ -76,8 +80,8 @@ public class TaskService {
 
     public List<Task> getAllUsers() {
         Sort sort = Sort.by(
-                Sort.Order.desc("priority"),  // Sort tasks with HIGH priority first
-                Sort.Order.desc("createdDate")  // Sort tasks by the newest created first
+                Sort.Order.asc("priority"),  // Sort tasks with HIGH priority first
+                Sort.Order.asc("createdDate")  // Sort tasks by the newest created first
         );
         return taskRepository.findAll(sort);
     }
@@ -86,10 +90,24 @@ public class TaskService {
 
         // Sort tasks: HIGH priority first, then by newest created date
         Sort sort = Sort.by(
-                Sort.Order.desc("priority"),  // HIGH priority first
-                Sort.Order.desc("createdDate") // Newest tasks first
+                Sort.Order.asc("priority"),  // HIGH priority first
+                Sort.Order.asc("createdDate") // Newest tasks first
         );
-        return taskRepository.findByAssignedUserContainingIgnoreCaseAndNameContainingIgnoreCase(keyword ,keyword ,sort);
+        return taskRepository.findByNameContainingIgnoreCase(keyword  ,sort);
+    }
+
+
+    public Task updateTask(Long id, Task roleDetails) {
+        Task role = taskRepository.findById(id).orElseThrow(() -> new RuntimeException("Role not found"));
+        role.setName(roleDetails.getName());
+        role.setDescription(roleDetails.getDescription());
+        role.setPriority(roleDetails.getPriority());
+        role.setCreatedDate(LocalDateTime.now());
+        return taskRepository.save(role);
+    }
+
+    public void deleteTask(Long id) {
+        taskRepository.deleteById(id);
     }
 
 }

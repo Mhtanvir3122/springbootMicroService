@@ -32,7 +32,8 @@ public class TaskController {
                     taskDto.getCreatedDate(),
                     taskDto.getPriority(),
                     taskDto.getName(),
-                    taskDto.getStatus()
+                    taskDto.getStatus(),
+                    taskDto.getDescription()
             );
             return ResponseEntity.status(HttpStatus.CREATED).body(createdTask);
         } catch (IllegalArgumentException e) {
@@ -51,6 +52,17 @@ public class TaskController {
             users = taskService.searchUsers(keyword);
         }
         return ResponseEntity.ok(users);
+    }
+
+
+    @PutMapping("/task-update/{id}")
+    public Task updateRole(@PathVariable Long id, @RequestBody Task role) {
+        return taskService.updateTask(id, role);
+    }
+
+    @DeleteMapping("/task-delete/{id}")
+    public void deleteRole(@PathVariable Long id) {
+        taskService.deleteTask(id);
     }
 
 }

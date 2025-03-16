@@ -19,6 +19,8 @@ public class TaskDTO {
     private String priority;
     private LocalDateTime createdDate;
     private String createdBy;
+    private String Description;
+
 
     // Constructor, getters, and setters
 }
