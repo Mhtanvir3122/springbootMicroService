@@ -2,6 +2,7 @@ package com.example.ServiceTwoApplication.Repository;
 
 
 import com.example.ServiceTwoApplication.Model.Task;
+import com.example.ServiceTwoApplication.dto.StatusCountDTO;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -46,4 +47,8 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
 
     @Query("SELECT t FROM Task t WHERE t.dueDate < :currentTime AND t.status != 'EXPIRED'")
     List<Task> findTasksByDueDateBeforeAndStatusNot(LocalDateTime currentTime, String status);
+
+
+    @Query("SELECT new com.example.ServiceTwoApplication.dto.StatusCountDTO(t.status, COUNT(t)) FROM Task t GROUP BY t.status")
+    List<StatusCountDTO> getStatusWiseTaskCount();
 }

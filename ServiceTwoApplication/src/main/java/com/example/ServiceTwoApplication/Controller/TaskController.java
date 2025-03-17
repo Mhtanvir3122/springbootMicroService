@@ -2,7 +2,9 @@ package com.example.ServiceTwoApplication.Controller;
 
 import com.example.ServiceTwoApplication.Model.Task;
 import com.example.ServiceTwoApplication.Model.User;
+import com.example.ServiceTwoApplication.Repository.TaskRepository;
 import com.example.ServiceTwoApplication.Service.TaskService;
+import com.example.ServiceTwoApplication.dto.StatusCountDTO;
 import com.example.ServiceTwoApplication.dto.TaskDTO;
 import com.example.ServiceTwoApplication.dto.TaskFilterRequest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +21,9 @@ public class TaskController {
 
     @Autowired
     private TaskService taskService;
+
+    @Autowired
+    private TaskRepository taskRepository;
 
     @PostMapping("/assign")
     public ResponseEntity<String> assignTask(@RequestParam Long taskId, @RequestParam Long agentId) {
@@ -92,5 +97,11 @@ public class TaskController {
         );
     }
 
+
+    @GetMapping("/status-count")
+    public ResponseEntity<List<StatusCountDTO>> getStatusWiseCount() {
+        List<StatusCountDTO> countList = taskRepository.getStatusWiseTaskCount();
+        return ResponseEntity.ok(countList);
+    }
 }
 
