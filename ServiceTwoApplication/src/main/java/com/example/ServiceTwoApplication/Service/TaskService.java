@@ -39,9 +39,8 @@ public class TaskService {
         }
 
         User assignedUser = new User();
-        assignedUser.setId(agentId);  // Set the user ID (you could fetch the full User object here)
+        assignedUser.setId(agentId);
 
-        // Fetch the active task count for the agent
         long activeTaskCount = taskRepository.countByAssignedUserIdAndStatusIn(agentId, List.of("TODO", "IN_PROGRESS"));
 
         if (activeTaskCount > 4) {
@@ -56,7 +55,6 @@ public class TaskService {
             Task task = taskRepository.findById(taskId)
                     .orElseThrow(() -> new RuntimeException("Task not found"));
 
-            // Assign the task to the agent (set the assignedUser object)
 
             task.setAssignedUser(assignedUser2);
             taskRepository.save(task);
@@ -66,11 +64,9 @@ public class TaskService {
 
         }
 
-        // Fetch the task to assign it to the agent
         Task task = taskRepository.findById(taskId)
                 .orElseThrow(() -> new RuntimeException("Task not found"));
 
-        // Assign the task to the agent (set the assignedUser object)
         task.setAssignedUser(assignedUser);
         taskRepository.save(task);
 
@@ -170,7 +166,7 @@ public class TaskService {
     // Run every minute
     @Scheduled(cron = "0 * * * * *")  // Every minute
     public void markOverdueTasksAsExpired() {
-        System.out.println("Tasks marked as expired");
+        System.out.println("Scheduler start Every Minute Successfully");
         // Get current time
         LocalDateTime currentTime = LocalDateTime.now();
 
