@@ -1,0 +1,26 @@
+package com.example.ServiceTaskManagementSystem;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
+import org.springframework.cloud.openfeign.EnableFeignClients;
+import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+@SpringBootApplication
+@EnableDiscoveryClient
+@RestController
+@EnableFeignClients
+@EnableScheduling  // Enable scheduling
+
+public class ServiceTaskManagementSystem {
+
+	public static void main(String[] args) {
+		SpringApplication.run(ServiceTaskManagementSystem.class, args);
+	}
+	@GetMapping("/service-two")
+	public String serviceOne() {
+		return "Hello from Service 2!";
+	}
+}
