@@ -24,4 +24,9 @@ public class RoutineService {
     public List<Routine> getRoutinesByTeacher(Long teacherId) {
         return routineRepository.findByTeacherId(teacherId);
     }
+
+    public List<Routine> getAllRoutines() {
+        return routineRepository.findAll();
+    }
+
 }

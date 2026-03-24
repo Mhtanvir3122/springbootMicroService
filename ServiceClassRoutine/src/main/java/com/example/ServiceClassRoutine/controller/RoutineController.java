@@ -32,4 +32,10 @@ public class RoutineController {
     public ResponseEntity<List<Routine>> getByTeacher(@PathVariable Long teacherId) {
         return ResponseEntity.ok(serviceClassRoutine.getRoutinesByTeacher(teacherId));
     }
+
+    @GetMapping
+    public ResponseEntity<List<Routine>> getAllRoutines() {
+        return ResponseEntity.ok(serviceClassRoutine.getAllRoutines());
+    }
+
 }
