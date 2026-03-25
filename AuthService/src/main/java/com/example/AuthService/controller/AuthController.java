@@ -2,10 +2,12 @@ package com.example.AuthService.controller;
 
 import com.example.AuthService.model.Role;
 import com.example.AuthService.model.User;
+import com.example.AuthService.model.dto.ApiResponse;
 import com.example.AuthService.model.dto.UserDTO;
 import com.example.AuthService.model.dto.UserDTOMessage;
 import com.example.AuthService.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,14 +28,27 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody Map<String, String> loginData) {
-        boolean isAuthenticated = userService.authenticate(loginData.get("username"), loginData.get("password"));
+    public ResponseEntity<ApiResponse<String>> login(@RequestBody Map<String, String> loginData) {
+
+        boolean isAuthenticated = userService.authenticate(
+                loginData.get("username"),
+                loginData.get("password")
+        );
+
         if (isAuthenticated) {
-            return ResponseEntity.ok("Login successful!");
+            return ResponseEntity.ok(
+                    new ApiResponse<>(200, "লগইন সফল হয়েছে", "লগইন সফল হয়েছে")
+            );
         } else {
-            return ResponseEntity.status(401).body("Invalid username or password");
+            ApiResponse<String> response = new ApiResponse<>();
+            response.setStatus(401);
+            response.setError("Invalid username or password"); // ✅ এখানে সেট করো
+            response.setMessage(null);
+
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
         }
     }
+
     @PostMapping("/forgot-password")
     public ResponseEntity<String> forgotPassword(@RequestBody Map<String, String> request) {
         String email = request.get("email");
