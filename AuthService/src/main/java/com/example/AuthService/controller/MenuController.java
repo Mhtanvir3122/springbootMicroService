@@ -47,4 +47,7 @@ public class MenuController {
         menuService.delete(id);
         return ResponseEntity.ok("Deleted successfully");
     }
+
+
+
 }
