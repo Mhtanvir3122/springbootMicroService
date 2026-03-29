@@ -43,4 +43,9 @@ public class Menu {
     @OneToMany(mappedBy = "parent", cascade = CascadeType.ALL)
     @JsonManagedReference
     private List<Menu> children = new ArrayList<>();
+
+
+    @ManyToMany(mappedBy = "menus")
+    @JsonBackReference
+    private List<Role> roles;
 }

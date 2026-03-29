@@ -1,6 +1,7 @@
 package com.example.AuthService.controller;
 
 import com.example.AuthService.model.Menu;
+import com.example.AuthService.model.dto.MenuTreeDTO;
 import com.example.AuthService.service.MenuService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -49,5 +50,8 @@ public class MenuController {
     }
 
 
-
+    @GetMapping("/data/{id}/menus")
+    public ResponseEntity<List<MenuTreeDTO>> getUserMenus(@PathVariable Long id) {
+        return ResponseEntity.ok(menuService.getUserMenuTree(id));
+    }
 }

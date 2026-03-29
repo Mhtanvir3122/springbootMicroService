@@ -1,6 +1,7 @@
 package com.example.AuthService.controller;
 
 import com.example.AuthService.model.Role;
+import com.example.AuthService.model.dto.RoleUpdateRequest;
 import com.example.AuthService.service.RoleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -53,5 +54,16 @@ public class RoleController {
         }
         return ResponseEntity.ok(employees);
     }
+    //new
+
+    @PutMapping("/update/{id}")
+    public ResponseEntity<Role> updateRole(
+            @PathVariable Long id,
+            @RequestBody RoleUpdateRequest request
+    ) {
+        Role updatedRole = roleService.updateRole(id, request);
+        return ResponseEntity.ok(updatedRole);
+    }
+
 }
 
