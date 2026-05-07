@@ -36,16 +36,17 @@ public class Menu {
     // Parent side
     @ManyToOne
     @JoinColumn(name = "parent_id")
-    @JsonBackReference
+    @JsonBackReference(value = "menu-parent")
     private Menu parent;
 
     // Children side
-    @OneToMany(mappedBy = "parent", cascade = CascadeType.ALL)
-    @JsonManagedReference
-    private List<Menu> children = new ArrayList<>();
+    @OneToMany(mappedBy = "parent", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference(value = "menu-parent")
+    private List<Menu> children;
 
 
+    // Role relation
     @ManyToMany(mappedBy = "menus")
-    @JsonBackReference
+    @JsonBackReference(value = "role-menu")
     private List<Role> roles;
 }

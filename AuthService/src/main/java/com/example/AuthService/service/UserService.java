@@ -93,19 +93,27 @@ public class UserService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
+        // 🔥 যদি empty list আসে → সব role remove
+        if (roleIds == null || roleIds.isEmpty()) {
+            user.getRoles().clear();
+            userRepository.save(user);
+            return new UserDTO(user);
+        }
+
         Set<Role> roles = new HashSet<>(roleRepository.findAllById(roleIds));
 
+        // 🔥 যদি invalid roleIds দেওয়া হয়
         if (roles.isEmpty()) {
             throw new RuntimeException("No valid roles found");
         }
 
-        // Clear existing roles before assigning new ones
+        // 🔥 existing roles clear করে নতুন assign
         user.getRoles().clear();
         user.getRoles().addAll(roles);
 
         userRepository.save(user);
 
-        return new UserDTO(user); // Return DTO instead of User entity
+        return new UserDTO(user);
     }
 
 

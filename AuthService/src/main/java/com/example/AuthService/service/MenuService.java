@@ -45,16 +45,44 @@ public class MenuService {
         menu.setPath(updated.getPath());
         menu.setCollapseId(updated.getCollapseId());
         menu.setBadgeCount(updated.getBadgeCount());
+        menu.setParent(updated.getParent());
+
 
         return menuRepository.save(menu);
     }
 
     // DELETE
+//    public void delete(Long id) {
+//        menuRepository.deleteById(id);
+//    }
+
     public void delete(Long id) {
-        menuRepository.deleteById(id);
+
+        Menu menu = menuRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Menu not found"));
+
+        // 👉 If parent has children → delete all recursively
+        deleteRecursively(menu);
+
+        // detach from parent
+        if (menu.getParent() != null) {
+            menu.getParent().getChildren().remove(menu);
+        }
+
+        menuRepository.delete(menu);
     }
 
+    private void deleteRecursively(Menu menu) {
 
+        if (menu.getChildren() != null && !menu.getChildren().isEmpty()) {
+            for (Menu child : new ArrayList<>(menu.getChildren())) {
+                deleteRecursively(child);
+            }
+        }
+
+        menu.getChildren().clear();
+        menuRepository.delete(menu);
+    }
     public List<MenuTreeDTO> getUserMenuTree(Long userId) {
 
         User user = userRepository.findById(userId)
